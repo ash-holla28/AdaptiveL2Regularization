@@ -1,5 +1,11 @@
 # AdaptiveReID: Adaptive L2 Regularization in Person Re-Identification
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/adaptivereid-adaptive-l2-regularization-in/person-re-identification-on-msmt17)](https://paperswithcode.com/sota/person-re-identification-on-msmt17?p=adaptivereid-adaptive-l2-regularization-in)
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/adaptivereid-adaptive-l2-regularization-in/person-re-identification-on-market-1501)](https://paperswithcode.com/sota/person-re-identification-on-market-1501?p=adaptivereid-adaptive-l2-regularization-in)
+
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/adaptivereid-adaptive-l2-regularization-in/person-re-identification-on-dukemtmc-reid)](https://paperswithcode.com/sota/person-re-identification-on-dukemtmc-reid?p=adaptivereid-adaptive-l2-regularization-in)
+
 ## Overview
 
 We introduce an adaptive L2 regularization mechanism termed AdaptiveReID, in the setting of person re-identification.
