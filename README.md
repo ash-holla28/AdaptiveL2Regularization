@@ -48,6 +48,7 @@ python3 -u solution.py --dataset_name "Market1501" --backbone_model_name "ResNet
 ```
 
 - Fill in the `pretrained_model_file_path` argument using the h5 file obtained during training.
+- To use the re-ranking method, append `--use_re_ranking` to the command.
 - You need to run this separate evaluation procedure only if `testing_size` is not set to `1.0` during training.
 
 ## Model Zoo
