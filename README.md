@@ -72,12 +72,10 @@ python3 -u solution.py --dataset_name "Market1501" --backbone_model_name "ResNet
 Please consider citing [AdaptiveReID](https://arxiv.org/abs/2007.07875) if it helps your research.
 
 ```
-@misc{ni2020adaptivereid,
-    title={AdaptiveReID: Adaptive L2 Regularization in Person Re-Identification},
-    author={Xingyang Ni and Liang Fang and Heikki Huttunen},
-    year={2020},
-    eprint={2007.07875},
-    archivePrefix={arXiv},
-    primaryClass={cs.CV}
+@article{ni2020adaptivereid,
+  title={AdaptiveReID: Adaptive L2 Regularization in Person Re-Identification},
+  author={Ni, Xingyang and Fang, Liang and Huttunen, Heikki},
+  journal={arXiv preprint arXiv:2007.07875},
+  year={2020}
 }
 ```
