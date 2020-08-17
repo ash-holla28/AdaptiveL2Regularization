@@ -217,7 +217,9 @@ def init_model(backbone_model_name,
         else:
             return Concatenate()(tensor_list)
 
-    def _triplet_hermans_loss(y_true, y_pred, metric="euclidean",
+    def _triplet_hermans_loss(y_true,
+                              y_pred,
+                              metric="euclidean",
                               margin="soft"):
         # Create the loss in two steps:
         # 1. Compute all pairwise distances according to the specified metric.
