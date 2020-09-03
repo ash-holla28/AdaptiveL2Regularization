@@ -21,7 +21,6 @@ Most notably, we obtain state-of-the-art performance on MSMT17, which is the lar
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 conda config --set auto_activate_base false
-conda config --append channels conda-forge
 conda create --yes --name TensorFlow2.2 python=3.7
 conda activate TensorFlow2.2
 conda install --yes cudatoolkit=10.1 cudnn=7.6
