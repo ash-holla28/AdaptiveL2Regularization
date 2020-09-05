@@ -122,8 +122,6 @@ flags.DEFINE_bool("use_identity_balancing_in_training", False,
                   "Use identity balancing in training.")
 flags.DEFINE_bool("use_re_ranking", False, "Use the re-ranking method.")
 flags.DEFINE_bool("evaluation_only", False, "Only perform evaluation.")
-flags.DEFINE_bool("evaluate_concatenated_embedding", True,
-                  "Concatenate multiple embeddings during evaluation.")
 flags.DEFINE_bool("save_data_to_disk", False,
                   "Save image features, identity ID and camera ID to disk.")
 flags.DEFINE_string("pretrained_model_file_path", "",
@@ -170,7 +168,6 @@ def init_model(backbone_model_name,
                use_adaptive_l1_l2_regularizer,
                min_value_in_clipping,
                max_value_in_clipping,
-               evaluate_concatenated_embedding,
                share_last_block=False):
 
     def _add_objective_module(input_tensor):
@@ -243,15 +240,11 @@ def init_model(backbone_model_name,
     submodel_list, preprocess_input = model_instantiation(
         input_shape=input_shape)
     vanilla_input_tensor = Input(shape=K.int_shape(submodel_list[0].input)[1:])
-    early_exits_output_tensor = []
     intermediate_output_tensor = vanilla_input_tensor
     for submodel in submodel_list[:-1]:
         if freeze_backbone_for_N_epochs > 0:
             submodel.trainable = False
         intermediate_output_tensor = submodel(intermediate_output_tensor)
-        early_exits_output_tensor.append(
-            GlobalAveragePooling2D()(intermediate_output_tensor))
-    early_exits_output_tensor = _apply_concatenation(early_exits_output_tensor)
 
     # Initiate the last blocks
     last_block = submodel_list[-1]
@@ -277,10 +270,6 @@ def init_model(backbone_model_name,
 
     # Add the regional branch
     if region_num > 0:
-        # Initiation
-        regional_classification_embedding_tensor_list = []
-        regional_miscellaneous_embedding_tensor_list = []
-
         # Process each region
         regional_branch_output_tensor = last_block_for_regional_branch_model(
             intermediate_output_tensor)
@@ -310,22 +299,16 @@ def init_model(backbone_model_name,
                 sliced_regional_branch_output_tensor)
             classification_output_tensor_list.append(
                 classification_output_tensor)
-            regional_classification_embedding_tensor_list.append(
+            classification_embedding_tensor_list.append(
                 classification_embedding_tensor)
             miscellaneous_output_tensor_list.append(miscellaneous_output_tensor)
-            regional_miscellaneous_embedding_tensor_list.append(
+            miscellaneous_embedding_tensor_list.append(
                 miscellaneous_embedding_tensor)
 
-        # Append the embedding tensors
-        classification_embedding_tensor_list.append(
-            _apply_concatenation(regional_classification_embedding_tensor_list))
-        miscellaneous_embedding_tensor_list.append(
-            _apply_concatenation(regional_miscellaneous_embedding_tensor_list))
-
     # Define the merged model
-    embedding_tensor_list = miscellaneous_embedding_tensor_list
-    if evaluate_concatenated_embedding:
-        embedding_tensor_list = [_apply_concatenation(embedding_tensor_list)]
+    embedding_tensor_list = [
+        _apply_concatenation(miscellaneous_embedding_tensor_list)
+    ]
     embedding_size_list = [
         K.int_shape(embedding_tensor)[1]
         for embedding_tensor in embedding_tensor_list
@@ -950,7 +933,7 @@ def main(_):
     use_label_smoothing_in_training = FLAGS.use_label_smoothing_in_training
     use_identity_balancing_in_training = FLAGS.use_identity_balancing_in_training
     use_re_ranking = FLAGS.use_re_ranking
-    evaluation_only, evaluate_concatenated_embedding, save_data_to_disk = FLAGS.evaluation_only, FLAGS.evaluate_concatenated_embedding, FLAGS.save_data_to_disk
+    evaluation_only, save_data_to_disk = FLAGS.evaluation_only, FLAGS.save_data_to_disk
     pretrained_model_file_path = FLAGS.pretrained_model_file_path
 
     output_folder_path = os.path.abspath(
@@ -1034,8 +1017,7 @@ def main(_):
         beta_regularization_factor=beta_regularization_factor,
         use_adaptive_l1_l2_regularizer=use_adaptive_l1_l2_regularizer,
         min_value_in_clipping=min_value_in_clipping,
-        max_value_in_clipping=max_value_in_clipping,
-        evaluate_concatenated_embedding=evaluate_concatenated_embedding)
+        max_value_in_clipping=max_value_in_clipping)
     visualize_model(model=training_model, output_folder_path=output_folder_path)
 
     print("Initiating the image augmentor {} ...".format(image_augmentor_name))
