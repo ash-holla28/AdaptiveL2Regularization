@@ -40,11 +40,6 @@ from utils.vis_utils import summarize_model, visualize_model
 # Specify the backend of matplotlib
 matplotlib.use("Agg")
 
-# https://github.com/tensorflow/tensorflow/issues/29161
-if tf.version.VERSION.split(".")[0] == "1":
-    session = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto())
-    K.set_session(session)
-
 flags.DEFINE_string("root_folder_path", "", "Folder path of the dataset.")
 flags.DEFINE_string("dataset_name", "Market1501", "Name of the dataset.")
 # ["Market1501", "DukeMTMC_reID", "MSMT17"]
