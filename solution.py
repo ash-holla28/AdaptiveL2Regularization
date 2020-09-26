@@ -605,6 +605,8 @@ class Evaluator(Callback):
                  every_N_epochs=1,
                  output_folder_path=None):
         super(Evaluator, self).__init__()
+        if hasattr(self, "_supports_tf_logs"):
+            self._supports_tf_logs = True
 
         self.callback_disabled = query_accumulated_info_dataframe is None or gallery_accumulated_info_dataframe is None
         if self.callback_disabled:
