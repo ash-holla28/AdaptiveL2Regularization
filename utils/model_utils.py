@@ -48,13 +48,13 @@ def specify_regularizers(model,
             if omit_layer:
                 continue
             if isinstance(item, (Conv1D, Conv2D, Dense)):
-                if kernel_regularization_factor != 0 and hasattr(
+                if kernel_regularization_factor >= 0 and hasattr(
                         item, "kernel_regularizer"):
                     item.kernel_regularizer = AdaptiveL1L2(
                         amplitude_l2=kernel_regularization_factor
                     ) if use_adaptive_l1_l2_regularizer else l2(
                         l=kernel_regularization_factor)
-                if bias_regularization_factor != 0 and hasattr(
+                if bias_regularization_factor >= 0 and hasattr(
                         item, "bias_regularizer"):
                     if item.use_bias:
                         item.bias_regularizer = AdaptiveL1L2(
@@ -62,14 +62,14 @@ def specify_regularizers(model,
                         ) if use_adaptive_l1_l2_regularizer else l2(
                             l=bias_regularization_factor)
             elif isinstance(item, BatchNormalization):
-                if gamma_regularization_factor != 0 and hasattr(
+                if gamma_regularization_factor >= 0 and hasattr(
                         item, "gamma_regularizer"):
                     if item.scale:
                         item.gamma_regularizer = AdaptiveL1L2(
                             amplitude_l2=gamma_regularization_factor
                         ) if use_adaptive_l1_l2_regularizer else l2(
                             l=gamma_regularization_factor)
-                if beta_regularization_factor != 0 and hasattr(
+                if beta_regularization_factor >= 0 and hasattr(
                         item, "beta_regularizer"):
                     if item.center:
                         item.beta_regularizer = AdaptiveL1L2(

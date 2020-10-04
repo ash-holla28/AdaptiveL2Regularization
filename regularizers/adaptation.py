@@ -22,7 +22,7 @@ class AdaptiveL1L2(Layer):
         self.omega_l2 = omega_l2
         self.preprocess_function = lambda x: amplitude_l2 * np.clip(
             0.2 * omega_l2 * x + 0.5, 0.0, 1.0
-        )  # TODO: Make it applicable to amplitude_l1.
+        )  # NB: This function is only applicable to L2.
 
     def build(self, input_shape):
         self.l1_regularization_factor = None  # pylint: disable=attribute-defined-outside-init
