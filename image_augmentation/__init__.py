@@ -5,7 +5,7 @@ import numpy as np
 from albumentations import (Compose, HorizontalFlip, PadIfNeeded, RandomCrop,
                             Rotate)
 
-from .random_erasing import RandomErasing  # pylint: disable=relative-beyond-top-level
+from .random_erasing import RandomErasing
 
 
 class BaseImageAugmentor(object):

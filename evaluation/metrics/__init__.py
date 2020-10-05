@@ -5,7 +5,7 @@ import pyximport
 pyximport.install(setup_args={"include_dirs": np.get_include()},
                   language_level=3)
 
-from .rank_cy import evaluate_cy  # pylint: disable=relative-beyond-top-level
+from .rank_cy import evaluate_cy
 
 
 def compute_CMC_mAP(distmat,

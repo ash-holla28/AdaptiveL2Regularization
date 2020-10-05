@@ -3,11 +3,9 @@ from collections import OrderedDict
 
 from sklearn.preprocessing import LabelEncoder
 
-from .dukemtmc_reid import \
-    load_DukeMTMC_reID  # pylint: disable=relative-beyond-top-level
-from .market1501 import \
-    load_Market1501  # pylint: disable=relative-beyond-top-level
-from .msmt17 import load_MSMT17  # pylint: disable=relative-beyond-top-level
+from .dukemtmc_reid import load_DukeMTMC_reID
+from .market1501 import load_Market1501
+from .msmt17 import load_MSMT17
 
 
 def _get_root_folder_path():
