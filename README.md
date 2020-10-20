@@ -1,4 +1,4 @@
-# AdaptiveReID: Adaptive L2 Regularization in Person Re-Identification
+# Adaptive L2 Regularization in Person Re-Identification
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/adaptivereid-adaptive-l2-regularization-in/person-re-identification-on-msmt17)](https://paperswithcode.com/sota/person-re-identification-on-msmt17?p=adaptivereid-adaptive-l2-regularization-in)
 
@@ -8,12 +8,13 @@
 
 ## Overview
 
-We introduce an adaptive L2 regularization mechanism termed AdaptiveReID, in the setting of person re-identification.
+We introduce an adaptive L2 regularization mechanism in the setting of person re-identification.
 In the literature, it is common practice to utilize hand-picked regularization factors which remain constant throughout the training procedure.
 Unlike existing approaches, the regularization factors in our proposed method are updated adaptively through backpropagation.
 This is achieved by incorporating trainable scalar variables as the regularization factors, which are further fed into a scaled hard sigmoid function.
 Extensive experiments on the Market-1501, DukeMTMC-reID and MSMT17 datasets validate the effectiveness of our framework.
 Most notably, we obtain state-of-the-art performance on MSMT17, which is the largest dataset for person re-identification.
+Source code is publicly available at https://github.com/nixingyang/AdaptiveL2Regularization.
 
 ## Environment
 
@@ -54,10 +55,10 @@ python3 -u solution.py --dataset_name "Market1501" --backbone_model_name "ResNet
 
 | Dataset | Backbone | mAP | Weights |
 | - | - | - |- |
-| Market1501 | ResNet50 | 88.3 | [Link](https://tuni-my.sharepoint.com/:u:/g/personal/xingyang_ni_tuni_fi/EbhPtp45rYFIlrOp4dfBUQEBY218NIYuXUTlax8SsqXqzA?e=x5CAFP) |
-| DukeMTMC_reID | ResNet50 | 79.9 | [Link](https://tuni-my.sharepoint.com/:u:/g/personal/xingyang_ni_tuni_fi/EYinialkEvBFgc1mXpxRWWYBv7wHZzFCDmdM_4XR7k6tSA?e=Rpp3b7) |
-| MSMT17 | ResNet50 | 59.4 | [Link](https://tuni-my.sharepoint.com/:u:/g/personal/xingyang_ni_tuni_fi/EWeswQHZdLlOhzfSCaJm2MsB9DCa3aYomZ-pDG4Ww7Uoyw?e=OueRHU) |
-| MSMT17 | ResNet152 | 62.2 | [Link](https://tuni-my.sharepoint.com/:u:/g/personal/xingyang_ni_tuni_fi/EYrv4y--tXlOm9u4QJEX4uwB22oBtpJjoXPBr_Ry7xUbxg?e=GKdxyq) |
+| Market1501 | ResNet50 | 88.3 | [Link](https://tuni-my.sharepoint.com/:u:/g/personal/xingyang_ni_tuni_fi/EbhPtp45rYFIlrOp4dfBUQEBY218NIYuXUTlax8SsqXqzA) |
+| DukeMTMC_reID | ResNet50 | 79.9 | [Link](https://tuni-my.sharepoint.com/:u:/g/personal/xingyang_ni_tuni_fi/EYinialkEvBFgc1mXpxRWWYBv7wHZzFCDmdM_4XR7k6tSA) |
+| MSMT17 | ResNet50 | 59.4 | [Link](https://tuni-my.sharepoint.com/:u:/g/personal/xingyang_ni_tuni_fi/EWeswQHZdLlOhzfSCaJm2MsB9DCa3aYomZ-pDG4Ww7Uoyw) |
+| MSMT17 | ResNet152 | 62.2 | [Link](https://tuni-my.sharepoint.com/:u:/g/personal/xingyang_ni_tuni_fi/EYrv4y--tXlOm9u4QJEX4uwB22oBtpJjoXPBr_Ry7xUbxg) |
 
 ## Acknowledgements
 
@@ -68,13 +69,15 @@ python3 -u solution.py --dataset_name "Market1501" --backbone_model_name "ResNet
 
 ## Citation
 
-Please consider citing [AdaptiveReID](https://arxiv.org/abs/2007.07875) if it helps your research.
+Please consider citing [this work](https://arxiv.org/abs/2007.07875) if it helps your research.
 
 ```
-@article{ni2020adaptivereid,
-  title={AdaptiveReID: Adaptive L2 Regularization in Person Re-Identification},
-  author={Ni, Xingyang and Fang, Liang and Huttunen, Heikki},
-  journal={arXiv preprint arXiv:2007.07875},
-  year={2020}
+@misc{ni2020adaptive,
+      title={Adaptive L2 Regularization in Person Re-Identification}, 
+      author={Xingyang Ni and Liang Fang and Heikki Huttunen},
+      year={2020},
+      eprint={2007.07875},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
