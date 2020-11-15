@@ -19,6 +19,7 @@ from tensorflow.keras.initializers import RandomNormal
 from tensorflow.keras.layers import (Activation, BatchNormalization,
                                      Concatenate, Conv2D, Dense,
                                      GlobalAveragePooling2D, Input, Lambda)
+from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import Sequence
@@ -105,8 +106,6 @@ flags.DEFINE_integer("augmentation_num", 1,
                      "Number of augmented samples to use in evaluation.")
 flags.DEFINE_bool("use_horizontal_flipping_in_evaluation", True,
                   "Use horizontal flipping in evaluation.")
-flags.DEFINE_bool("use_label_smoothing_in_training", True,
-                  "Use label smoothing in training.")
 flags.DEFINE_bool("use_identity_balancing_in_training", False,
                   "Use identity balancing in training.")
 flags.DEFINE_bool("use_re_ranking", False, "Use the re-ranking method.")
@@ -324,8 +323,10 @@ def init_model(backbone_model_name,
     inference_model.embedding_size_list = embedding_size_list
 
     # Compile the model
+    categorical_crossentropy_loss_function = lambda y_true, y_pred: 1.0 * categorical_crossentropy(
+        y_true, y_pred, from_logits=False, label_smoothing=0.1)
     classification_loss_function_list = [
-        "categorical_crossentropy"
+        categorical_crossentropy_loss_function
     ] * len(classification_output_tensor_list)
     triplet_hermans_loss_function = lambda y_true, y_pred: 1.0 * _triplet_hermans_loss(
         y_true, y_pred)
@@ -359,28 +360,20 @@ def read_image_file(image_file_path, input_shape):
     return image_content
 
 
-def apply_label_smoothing(y_true, epsilon=0.1):
-    # https://arxiv.org/abs/1512.00567
-    # https://github.com/keras-team/keras/pull/4723
-    # https://github.com/wangguanan/Pytorch-Person-REID-Baseline-Bag-of-Tricks/blob/master/tools/loss.py#L6
-    y_true = (1 - epsilon) * y_true + epsilon / y_true.shape[1]
-    return y_true
-
-
 class TrainDataSequence(Sequence):
 
     def __init__(self, accumulated_info_dataframe,
                  attribute_name_to_label_encoder_dict, preprocess_input,
                  input_shape, image_augmentor, use_data_augmentation,
-                 use_identity_balancing, use_label_smoothing,
-                 label_repetition_num, identity_num_per_batch,
-                 image_num_per_identity, steps_per_epoch):
+                 use_identity_balancing, label_repetition_num,
+                 identity_num_per_batch, image_num_per_identity,
+                 steps_per_epoch):
         super(TrainDataSequence, self).__init__()
 
         # Save as variables
         self.accumulated_info_dataframe, self.attribute_name_to_label_encoder_dict, self.preprocess_input, self.input_shape = accumulated_info_dataframe, attribute_name_to_label_encoder_dict, preprocess_input, input_shape
         self.image_augmentor, self.use_data_augmentation, self.use_identity_balancing = image_augmentor, use_data_augmentation, use_identity_balancing
-        self.use_label_smoothing, self.label_repetition_num = use_label_smoothing, label_repetition_num
+        self.label_repetition_num = label_repetition_num
         self.identity_num_per_batch, self.image_num_per_identity, self.steps_per_epoch = identity_num_per_batch, image_num_per_identity, steps_per_epoch
 
         # Unpack image_file_path and identity_ID
@@ -413,7 +406,7 @@ class TrainDataSequence(Sequence):
         while True:
             # Split image file paths into multiple sections
             identity_ID_to_image_file_paths_in_sections_dict = {}
-            for identity_ID in identity_ID_to_image_file_paths_dict.keys():
+            for identity_ID in identity_ID_to_image_file_paths_dict:
                 image_file_paths = np.array(
                     identity_ID_to_image_file_paths_dict[identity_ID])
                 if len(image_file_paths) < self.image_num_per_identity:
@@ -504,10 +497,6 @@ class TrainDataSequence(Sequence):
         for one_hot_encoding_list in attribute_name_to_one_hot_encoding_list_dict.values(
         ):
             one_hot_encoding_array = np.array(one_hot_encoding_list)
-            if self.use_label_smoothing:
-                # Apply label smoothing
-                one_hot_encoding_array = apply_label_smoothing(
-                    one_hot_encoding_array)
             one_hot_encoding_array_list.append(one_hot_encoding_array)
 
         # Hacky solution to specify one_hot_encoding_array_list
@@ -852,7 +841,6 @@ def main(_):
     use_data_augmentation_in_evaluation = FLAGS.use_data_augmentation_in_evaluation
     augmentation_num = FLAGS.augmentation_num
     use_horizontal_flipping_in_evaluation = FLAGS.use_horizontal_flipping_in_evaluation
-    use_label_smoothing_in_training = FLAGS.use_label_smoothing_in_training
     use_identity_balancing_in_training = FLAGS.use_identity_balancing_in_training
     use_re_ranking = FLAGS.use_re_ranking
     evaluation_only, save_data_to_disk = FLAGS.evaluation_only, FLAGS.save_data_to_disk
@@ -958,7 +946,6 @@ def main(_):
         image_augmentor=image_augmentor,
         use_data_augmentation=use_data_augmentation_in_training,
         use_identity_balancing=use_identity_balancing_in_training,
-        use_label_smoothing=use_label_smoothing_in_training,
         label_repetition_num=len(training_model.outputs),
         identity_num_per_batch=identity_num_per_batch,
         image_num_per_identity=image_num_per_identity,
