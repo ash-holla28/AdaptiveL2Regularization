@@ -87,7 +87,7 @@ def specify_regularizers(model,
     # Reload the model
     # https://github.com/keras-team/keras/issues/2717#issuecomment-447570737
     vanilla_weights = model.get_weights()
-    model = model_from_json(model.to_json(),
+    model = model_from_json(json_string=model.to_json(),
                             custom_objects={"AdaptiveL1L2": AdaptiveL1L2})
     model.set_weights(vanilla_weights)
 
