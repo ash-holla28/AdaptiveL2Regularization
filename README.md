@@ -1,3 +1,6 @@
+![Python](https://img.shields.io/badge/python-3.7-blue?style=flat-square&logo=python)
+![TensorFlow](https://img.shields.io/badge/tensorflow-2.2.1-green?style=flat-square&logo=tensorflow)
+
 # Adaptive L2 Regularization in Person Re-Identification
 
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/adaptivereid-adaptive-l2-regularization-in/person-re-identification-on-msmt17)](https://paperswithcode.com/sota/person-re-identification-on-msmt17?p=adaptivereid-adaptive-l2-regularization-in)
