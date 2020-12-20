@@ -2,7 +2,6 @@ import os
 import shutil
 import sys
 import time
-from collections import OrderedDict
 from datetime import datetime
 
 import cv2
@@ -159,26 +158,24 @@ def init_model(backbone_model_name,
                share_last_block=False):
 
     def _add_objective_module(input_tensor):
-        # Add GlobalAveragePooling2D
+        # Add a pooling layer if needed
         if len(K.int_shape(input_tensor)) == 4:
-            global_average_pooling_tensor = GlobalAveragePooling2D()(
-                input_tensor)
+            global_pooling_tensor = GlobalAveragePooling2D()(input_tensor)
         else:
-            global_average_pooling_tensor = input_tensor
+            global_pooling_tensor = input_tensor
         if min_value_in_clipping is not None and max_value_in_clipping is not None:
-            global_average_pooling_tensor = Lambda(lambda x: K.clip(
+            global_pooling_tensor = Lambda(lambda x: K.clip(
                 x,
                 min_value=min_value_in_clipping,
-                max_value=max_value_in_clipping))(global_average_pooling_tensor)
+                max_value=max_value_in_clipping))(global_pooling_tensor)
 
         # https://arxiv.org/abs/1801.07698v1 Section 3.2.2 Output setting
         # https://arxiv.org/abs/1807.11042
-        classification_input_tensor = global_average_pooling_tensor
+        classification_input_tensor = global_pooling_tensor
         classification_embedding_tensor = BatchNormalization(
             scale=True, epsilon=2e-5)(classification_input_tensor)
 
         # Add categorical crossentropy loss
-        assert len(attribute_name_to_label_encoder_dict) == 1
         label_encoder = attribute_name_to_label_encoder_dict["identity_ID"]
         class_num = len(label_encoder.classes_)
         classification_output_tensor = Dense(
@@ -190,7 +187,7 @@ def init_model(backbone_model_name,
             classification_output_tensor)
 
         # Add miscellaneous loss
-        miscellaneous_input_tensor = global_average_pooling_tensor
+        miscellaneous_input_tensor = global_pooling_tensor
         miscellaneous_embedding_tensor = miscellaneous_input_tensor
         miscellaneous_output_tensor = miscellaneous_input_tensor
 
@@ -450,8 +447,8 @@ class TrainDataSequence(Sequence):
         return self.steps_per_epoch
 
     def __getitem__(self, index):
-        image_content_list, attribute_name_to_one_hot_encoding_list_dict = [], OrderedDict(
-            {})
+        label_encoder = self.attribute_name_to_label_encoder_dict["identity_ID"]
+        image_content_list, one_hot_encoding_list = [], []
         image_file_path_list = self.image_file_path_list[index *
                                                          self.batch_size:
                                                          (index + 1) *
@@ -467,21 +464,12 @@ class TrainDataSequence(Sequence):
             accumulated_info = self.accumulated_info_dataframe.iloc[
                 record_index]
             assert image_file_path == accumulated_info["image_file_path"]
-            for attribute_name, label_encoder in self.attribute_name_to_label_encoder_dict.items(
-            ):
-                # Get the one hot encoding vector
-                attribute_value = accumulated_info[attribute_name]
-                one_hot_encoding = np.zeros(len(label_encoder.classes_))
-                one_hot_encoding[label_encoder.transform([attribute_value
-                                                         ])[0]] = 1
 
-                # Append one_hot_encoding
-                if attribute_name not in attribute_name_to_one_hot_encoding_list_dict:
-                    attribute_name_to_one_hot_encoding_list_dict[
-                        attribute_name] = []
-                attribute_name_to_one_hot_encoding_list_dict[
-                    attribute_name].append(one_hot_encoding)
-        assert len(image_content_list) == self.batch_size
+            # Get the one hot encoding vector
+            identity_ID = accumulated_info["identity_ID"]
+            one_hot_encoding = np.zeros(len(label_encoder.classes_))
+            one_hot_encoding[label_encoder.transform([identity_ID])[0]] = 1
+            one_hot_encoding_list.append(one_hot_encoding)
 
         # Construct image_content_array
         image_content_array = np.array(image_content_list)
@@ -493,16 +481,8 @@ class TrainDataSequence(Sequence):
         image_content_array = self.preprocess_input(image_content_array)
 
         # Construct one_hot_encoding_array_list
-        one_hot_encoding_array_list = []
-        for one_hot_encoding_list in attribute_name_to_one_hot_encoding_list_dict.values(
-        ):
-            one_hot_encoding_array = np.array(one_hot_encoding_list)
-            one_hot_encoding_array_list.append(one_hot_encoding_array)
-
-        # Hacky solution to specify one_hot_encoding_array_list
-        assert list(attribute_name_to_one_hot_encoding_list_dict.keys()
-                   )[0] == "identity_ID"
-        one_hot_encoding_array_list = [one_hot_encoding_array_list[0]
+        one_hot_encoding_array = np.array(one_hot_encoding_list)
+        one_hot_encoding_array_list = [one_hot_encoding_array
                                       ] * self.label_repetition_num
 
         return image_content_array, one_hot_encoding_array_list
