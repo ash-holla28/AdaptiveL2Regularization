@@ -1,5 +1,5 @@
 ![Python](https://img.shields.io/badge/python-3.7-blue?style=flat-square&logo=python)
-![TensorFlow](https://img.shields.io/badge/tensorflow-2.2.1-green?style=flat-square&logo=tensorflow)
+![TensorFlow](https://img.shields.io/badge/tensorflow-2.2.2-green?style=flat-square&logo=tensorflow)
 
 # Adaptive L2 Regularization in Person Re-Identification
 
@@ -27,9 +27,9 @@ bash Miniconda3-latest-Linux-x86_64.sh
 conda config --set auto_activate_base false
 conda create --yes --name TensorFlow2.2 python=3.7
 conda activate TensorFlow2.2
-conda install --yes cudatoolkit=10.1 cudnn=7.6
+conda install --yes cudatoolkit=10.1 cudnn=7.6 -c nvidia
 conda install --yes cython matplotlib pandas pydot scikit-learn
-pip install tensorflow==2.2.1
+pip install tensorflow==2.2.2
 pip install opencv-python
 pip install albumentations
 ```
