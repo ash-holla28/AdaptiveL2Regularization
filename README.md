@@ -70,6 +70,10 @@ python3 -u solution.py --dataset_name "Market1501" --backbone_model_name "ResNet
 - Random Erasing is adapted from [Random-Erasing](https://github.com/zhunzhong07/Random-Erasing/blob/master/transforms.py).
 - Triplet Loss is adapted from [triplet-reid](https://github.com/VisualComputingInstitute/triplet-reid/blob/master/loss.py).
 
+## Third-Party Implementation
+
+- The [adaptive-l2-regularization-pytorch](https://github.com/duyuanchao/adaptive-l2-regularization-pytorch) repository from [duyuanchao](https://github.com/duyuanchao) in PyTorch.
+
 ## Citation
 
 Please consider citing [this work](https://arxiv.org/abs/2007.07875) if it helps your research.
