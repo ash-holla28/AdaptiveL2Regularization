@@ -1,4 +1,4 @@
-![Python](https://img.shields.io/badge/python-3.7-blue?style=flat-square&logo=python)
+![Python](https://img.shields.io/badge/python-3.8-blue?style=flat-square&logo=python)
 ![TensorFlow](https://img.shields.io/badge/tensorflow-2.2.2-green?style=flat-square&logo=tensorflow)
 
 # Adaptive L2 Regularization in Person Re-Identification
@@ -25,13 +25,13 @@ Source code is publicly available at https://github.com/nixingyang/AdaptiveL2Reg
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 conda config --set auto_activate_base false
-conda create --yes --name TensorFlow2.2 python=3.7
+conda create --yes --name TensorFlow2.2 python=3.8
 conda activate TensorFlow2.2
 conda install --yes cudatoolkit=10.1 cudnn=7.6 -c nvidia
-conda install --yes cython matplotlib pandas pydot scikit-learn
+conda install --yes cython matplotlib numpy=1.18 pandas pydot scikit-learn
 pip install tensorflow==2.2.2
 pip install opencv-python
-pip install albumentations
+pip install albumentations --no-binary imgaug,albumentations
 ```
 
 ## Training
@@ -79,12 +79,12 @@ python3 -u solution.py --dataset_name "Market1501" --backbone_model_name "ResNet
 Please consider citing [this work](https://arxiv.org/abs/2007.07875) if it helps your research.
 
 ```
-@misc{ni2020adaptive,
-      title={Adaptive L2 Regularization in Person Re-Identification}, 
-      author={Xingyang Ni and Liang Fang and Heikki Huttunen},
-      year={2020},
-      eprint={2007.07875},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@inproceedings{ni2021adaptive,
+  title={Adaptive L2 Regularization in Person Re-Identification},
+  author={Ni, Xingyang and Fang, Liang and Huttunen, Heikki},
+  booktitle={2020 25th International Conference on Pattern Recognition (ICPR)},
+  pages={9601--9607},
+  year={2021},
+  organization={IEEE}
 }
 ```
